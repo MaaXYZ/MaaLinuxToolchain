@@ -47,7 +47,16 @@ jobs:
                   cd ..
                   find x-tools
 
-            - uses: actions/upload-artifact@v4
+            - name: Upload toolchain
+              uses: actions/upload-artifact@v4
               with:
                   name: MaaLinuxToolchain-${{ matrix.arch }}
                   path: 'x-tools'
+
+            - name: Upload logs
+              uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                name: MaaLinuxToolchainLogs-${{ env.TARGET }}
+                path: build.log
+
