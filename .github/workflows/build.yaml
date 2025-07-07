@@ -43,7 +43,7 @@ jobs:
             - name: Build toolchain
               run: |
                   cd ${{ matrix.arch }}
-                  install-ctng/bin/ct-ng build
+                  ../install-ctng/bin/ct-ng build
                   cd ..
                   find x-tools
 
