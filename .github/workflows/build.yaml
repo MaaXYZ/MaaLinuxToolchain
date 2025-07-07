@@ -7,13 +7,14 @@ on:
         branches:
             - '**'
         paths:
-            - '.config-x64'
-            - '.config-arm64'
+            - 'x64/.config'
+            - 'arm64/.config'
+            - '.github/workflows/build.yaml'
+            - 'build-ctng.sh'
     workflow_dispatch:
 
 jobs:
     ubuntu:
-        needs: meta
         runs-on: ubuntu-latest
         strategy:
             matrix:
