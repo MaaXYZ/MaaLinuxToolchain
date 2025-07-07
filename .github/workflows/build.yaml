@@ -58,5 +58,5 @@ jobs:
               if: always()
               with:
                 name: MaaLinuxToolchainLogs-${{ env.TARGET }}
-                path: build.log
+                path: ${{ matrix.arch }}/build.log
 
