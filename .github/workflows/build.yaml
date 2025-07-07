@@ -1,0 +1,43 @@
+name: build
+
+on:
+    push:
+        tags:
+            - 'v*'
+        branches:
+            - '**'
+        paths:
+            - '.config-x64'
+            - '.config-arm64'
+    workflow_dispatch:
+
+jobs:
+    ubuntu:
+        needs: meta
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                arch: [x64, arm64]
+            fail-fast: false
+        
+        steps:
+            - name: Update system
+              run: |
+                  apt update
+                  apt upgrade
+
+            - name: Install deps
+              run: |
+                  apt install -y build-essential automake texinfo flex bison
+
+            - name: Install ctng
+              run: |
+                  ./build-ctng.sh
+
+            - name: Build toolchain
+              run: |
+                  cd ${{ matrix.arch }}
+                  install-ctng/bin/ct-ng build
+                  cd ..
+                  find x-tools
+
