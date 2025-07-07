@@ -24,12 +24,12 @@ jobs:
         steps:
             - name: Update system
               run: |
-                  apt update
-                  apt upgrade
+                  sudo apt-get update
+                  sudo apt-get upgrade
 
             - name: Install deps
               run: |
-                  apt install -y build-essential automake texinfo flex bison
+                  sudo apt-get install -y build-essential automake texinfo flex bison
 
             - name: Install ctng
               run: |
