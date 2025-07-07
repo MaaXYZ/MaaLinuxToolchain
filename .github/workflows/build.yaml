@@ -34,7 +34,7 @@ jobs:
 
             - name: Install deps
               run: |
-                  sudo apt-get install -y build-essential automake texinfo flex bison
+                  sudo apt-get install -y build-essential automake texinfo flex bison help2man libtool-bin
 
             - name: Install ctng
               run: |
@@ -47,3 +47,8 @@ jobs:
                   cd ..
                   find x-tools
 
+            - uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                  name: MaaLinuxToolchain-${{ matrix.arch }}
+                  path: 'x-tools'
