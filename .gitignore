@@ -1,6 +1,8 @@
 x64/include
 arm64/include
 .config.old
+.build
+build.log
 
 *.tar.xz
 build-ctng
