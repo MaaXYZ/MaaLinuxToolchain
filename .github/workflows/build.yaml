@@ -22,9 +22,14 @@ jobs:
             fail-fast: false
         
         steps:
+            - uses: actions/checkout@v4
+              with:
+                  submodules: true
+
             - name: Update system
               run: |
                   sudo apt-get update
+                  sudo apt-get remove --purge firefox
                   sudo apt-get upgrade
 
             - name: Install deps
