@@ -17,6 +17,8 @@ build-libcxx-stage1-rt
 build-llvm-stage2
 stage2
 build-libcxx-stage2-x64
+build-libcxx-stage2-x64-rt
 build-libcxx-stage2-arm64
+build-libcxx-stage2-arm64-rt
 
 assets
