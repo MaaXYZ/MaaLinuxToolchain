@@ -30,27 +30,40 @@ jobs:
                   submodules: true
                   lfs: true
 
+            - name: Cache bare toolchain
+              id: cache-bare-toolchain
+              uses: actions/cache@v4
+              with:
+                path: |
+                  maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz
+                key: bare-toolchain-${{ matrix.arch }}-${{ hashFiles(matrix.arch + '/.config') }}
+
             - name: Update system
+              if: ${{ steps.cache-bare-toolchain.outputs.cache-hit != 'true' }}
               run: |
                   sudo apt-get update
                   sudo apt-get remove --purge firefox
                   sudo apt-get upgrade
 
             - name: Install deps
+              if: ${{ success() && steps.cache-bare-toolchain.outputs.cache-hit != 'true' }}
               run: |
                   sudo apt-get install -y build-essential automake texinfo flex bison help2man libtool-bin
 
             - name: Install ctng
+              if: ${{ success() && steps.cache-bare-toolchain.outputs.cache-hit != 'true' }}
               run: |
                   ./build-ctng.sh
 
             - name: Build toolchain
+              if: ${{ success() && steps.cache-bare-toolchain.outputs.cache-hit != 'true' }}
               run: |
                   cd ${{ matrix.arch }}
                   ../install-ctng/bin/ct-ng build
                   cd ..
 
             - name: Package toolchain
+              if: ${{ success() && steps.cache-bare-toolchain.outputs.cache-hit != 'true' }}
               run: |
                   tar Jcvf maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz x-tools
 
@@ -62,7 +75,7 @@ jobs:
 
             - name: Upload logs
               uses: actions/upload-artifact@v4
-              if: always()
+              if: ${{ steps.cache-bare-toolchain.outputs.cache-hit != 'true' }}
               with:
                 name: MaaLinuxToolchainLogs-${{ matrix.arch }}
                 path: ${{ matrix.arch }}/build.log
@@ -92,17 +105,47 @@ jobs:
               run: |
                 ./clone-llvm.sh
 
+            - name: Cache clang stage1
+              id: cache-clang-stage1
+              uses: actions/cache@v4
+              with:
+                path: |
+                  clang-stage1.tar.xz
+                key: clang-stage1-${{ hashFiles('x64/.config', 'build-clang-stage1.sh', 'clang/stage1.cmake') }}
+
             - name: Build clang stage1
+              if: ${{ steps.cache-clang-stage1.outputs.cache-hit != 'true' }}
               run: |
                 ./build-clang-stage1.sh
+                tar Jcf clang-stage1.tar.xz stage1
+
+            - name: Unpack clang stage1
+              if: ${{ steps.cache-clang-stage1.outputs.cache-hit == 'true' }}
+              run: |
+                tar Jxf clang-stage1.tar.xz
 
             - name: Build libcxx stage1
               run: |
                 ./build-libcxx-stage1.sh
 
+            - name: Cache clang stage2
+              id: cache-clang-stage2
+              uses: actions/cache@v4
+              with:
+                path: |
+                  clang-stage2.tar.xz
+                key: clang-stage2-${{ hashFiles('x64/.config', 'build-clang-stage1.sh', 'clang/stage1.cmake', 'build-libcxx-stage1.sh', 'clang/stage1-with-libs.cmake', 'build-clang-stage2.sh') }}
+
             - name: Build clang stage2
+              if: ${{ steps.cache-clang-stage2.outputs.cache-hit != 'true' }}
               run: |
                 ./build-clang-stage2.sh
+                tar Jcf clang-stage2.tar.xz stage2
+
+            - name: Unpack clang stage2
+              if: ${{ steps.cache-clang-stage2.outputs.cache-hit == 'true' }}
+              run: |
+                tar Jxf clang-stage2.tar.xz
 
             - name: Build libcxx stage2 x64
               run: |
