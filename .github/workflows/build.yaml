@@ -14,10 +14,13 @@ on:
     workflow_dispatch:
 
 jobs:
+    meta:
+        uses: ./.github/workflows/meta.yml
+
     ubuntu:
         # https://github.com/crosstool-ng/crosstool-ng/issues/2358
         # cannot built on latest, aka 24.04
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-22.04 
         strategy:
             matrix:
                 arch: [x64, arm64]
@@ -47,13 +50,16 @@ jobs:
                   cd ${{ matrix.arch }}
                   ../install-ctng/bin/ct-ng build
                   cd ..
-                  find x-tools
+
+            - name: Package toolchain
+              run: |
+                  tar Jcvf maa-linux-toolchain-${{ matrix.arch }}.tar.xz x-tools
 
             - name: Upload toolchain
               uses: actions/upload-artifact@v4
               with:
                   name: MaaLinuxToolchain-${{ matrix.arch }}
-                  path: 'x-tools'
+                  path: maa-linux-toolchain-${{ matrix.arch }}.tar.xz
 
             - name: Upload logs
               uses: actions/upload-artifact@v4
@@ -62,3 +68,27 @@ jobs:
                 name: MaaLinuxToolchainLogs-${{ matrix.arch }}
                 path: ${{ matrix.arch }}/build.log
 
+    release:
+        if: ${{ needs.meta.outputs.is_release == 'true' }}
+        needs: [meta, ubuntu]
+        runs-on: ubuntu-latest
+        env:
+            OUTPUT_PUBLISH_FAILED: 'echo "failed=true" >> $GITHUB_OUTPUT && echo "::error::Failed to publish packages"'
+
+        steps:
+            - uses: actions/download-artifact@v4
+              with:
+                  path: assets
+
+            - run: |
+                  cd assets
+                  for f in *; do
+                    (cd $f && zip -r ../$f-${{ needs.meta.outputs.tag }}.zip .)
+                  done
+
+            - uses: softprops/action-gh-release@v2
+              with:
+                  files: assets/*.zip
+                  tag_name: ${{ needs.meta.outputs.tag }}
+                  prerelease: ${{ needs.meta.outputs.is_pre_release == 'true' }}
+                  generate_release_notes: true
