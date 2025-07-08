@@ -80,15 +80,9 @@ jobs:
               with:
                   path: assets
 
-            - run: |
-                  cd assets
-                  for f in *; do
-                    (cd $f && zip -r ../$f-${{ needs.meta.outputs.tag }}.zip .)
-                  done
-
             - uses: softprops/action-gh-release@v2
               with:
-                  files: assets/*.zip
+                  files: assets/**/*.tar.xz
                   tag_name: ${{ needs.meta.outputs.tag }}
                   prerelease: ${{ needs.meta.outputs.is_pre_release == 'true' }}
                   generate_release_notes: true
