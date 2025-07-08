@@ -8,3 +8,14 @@ build.log
 build-ctng
 install-ctng
 x-tools
+
+llvm-project
+build-llvm-stage1
+stage1
+build-libcxx-stage1
+build-llvm-stage2
+stage2
+build-libcxx-stage2-x64
+build-libcxx-stage2-arm64
+
+assets
