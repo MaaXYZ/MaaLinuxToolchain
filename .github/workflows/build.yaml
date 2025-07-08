@@ -36,7 +36,7 @@ jobs:
               with:
                 path: |
                   maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz
-                key: bare-toolchain-${{ matrix.arch }}-${{ hashFiles(matrix.arch + '/.config') }}
+                key: bare-toolchain-${{ matrix.arch }}-${{ hashFiles(format('{0}/.config', matrix.arch)) }}
 
             - name: Update system
               if: ${{ steps.cache-bare-toolchain.outputs.cache-hit != 'true' }}
