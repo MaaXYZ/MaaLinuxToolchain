@@ -4,7 +4,6 @@ arm64/include
 .build
 build.log
 
-*.tar.xz
 build-ctng
 install-ctng
 x-tools
