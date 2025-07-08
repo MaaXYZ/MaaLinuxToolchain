@@ -8,5 +8,5 @@ set(CMAKE_CXX_COMPILER ${STAGE2_ROOT}/bin/clang++)
 set(CMAKE_ASM_COMPILER ${STAGE2_ROOT}/bin/clang)
 set(CMAKE_SYSROOT ${XTOOLS_ROOT}/aarch64-linux-gnu/sysroot)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC --sysroot=${CMAKE_SYSROOT}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC --sysroot=${CMAKE_SYSROOT}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC --sysroot=${CMAKE_SYSROOT} --gcc-toolchain=${XTOOLS_ROOT}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC --sysroot=${CMAKE_SYSROOT} --gcc-toolchain=${XTOOLS_ROOT}")

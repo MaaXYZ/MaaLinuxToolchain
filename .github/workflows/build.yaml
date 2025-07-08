@@ -86,9 +86,32 @@ jobs:
                 done
                 ls x-tools
 
-            - name: Build clang
+            - name: Clone clang
               run: |
-                ./build-llvm.sh
+                ./clone-llvm.sh
+
+            - name: Build clang stage1
+              run: |
+                ./build-clang-stage1.sh
+
+            - name: Build libcxx stage1
+              run: |
+                ./build-libcxx-stage1.sh
+
+            - name: Build clang stage2
+              run: |
+                ./build-clang-stage2.sh
+
+            - name: Build libcxx stage2 x64
+              run: |
+                ./build-libcxx-stage2-x64.sh
+
+            - name: Build libcxx stage2 arm64
+              run: |
+                ./build-libcxx-stage2-arm64.sh
+
+            - name: Move tools
+              run: |
                 mv stage2 x-tools/tools
 
             - name: Package toolchain
