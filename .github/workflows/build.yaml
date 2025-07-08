@@ -7,10 +7,10 @@ on:
         branches:
             - '**'
         paths:
-            - 'x64/.config'
-            - 'arm64/.config'
+            - '**/.config'
             - '.github/workflows/build.yaml'
-            - 'build-ctng.sh'
+            - '*.sh'
+            - 'clang/*.cmake'
     workflow_dispatch:
 
 jobs:
