@@ -140,7 +140,8 @@ jobs:
             - name: Validate clang stage1
               # should use libstdc++
               run: |
-                stage1/bin/clang++ test/main.cpp -o test/main --sysroot=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot && ldd test/main && test/main
+                stage1/bin/clang++ test/main.cpp -o test/main -target=x86_64-linux-gnu --gcc-toolchain=x-tools/x86_64-linux-gnu --sysroot=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot \
+                  -Wl,--rpath=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/lib && ldd test/main && test/main
 
             - name: Build libcxx stage1
               run: |
@@ -149,7 +150,9 @@ jobs:
             - name: Validate clang stage1 libcxx
               # should use libc++
               run: |
-                stage1/bin/clang++ test/main.cpp -o test/main --sysroot=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot --stdlib=libc++ --rtlib=compiler-rt --unwindlib=libunwind -Wl,--rpath=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/lib && ldd test/main && test/main
+                stage1/bin/clang++ test/main.cpp -o test/main -target=x86_64-linux-gnu --gcc-toolchain=x-tools/x86_64-linux-gnu --sysroot=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot \
+                --stdlib=libc++ --rtlib=compiler-rt --unwindlib=libunwind \
+                -Wl,--rpath=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/lib && ldd test/main && test/main
 
             - name: Cache clang stage2
               id: cache-clang-stage2
@@ -181,7 +184,8 @@ jobs:
             - name: Validate clang stage2 old
               # should use libc++
               run: |
-                stage2/bin/clang++ test/main.cpp -o test/main --sysroot=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot -Wl,--rpath=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/lib && ldd test/main && test/main
+                stage2/bin/clang++ test/main.cpp -o test/main -target=x86_64-linux-gnu --gcc-toolchain=x-tools/x86_64-linux-gnu --sysroot=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot \
+                  -Wl,--rpath=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/lib && ldd test/main && test/main
 
             - name: Build libcxx stage2 x64
               run: |
@@ -190,7 +194,8 @@ jobs:
             - name: Validate clang stage2 new
               # should use libc++
               run: |
-                stage2/bin/clang++ test/main.cpp -o test/main --sysroot=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot -Wl,--rpath=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/lib && ldd test/main && test/main
+                stage2/bin/clang++ test/main.cpp -o test/main -target=x86_64-linux-gnu --gcc-toolchain=x-tools/x86_64-linux-gnu --sysroot=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot \
+                  -Wl,--rpath=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/lib && ldd test/main && test/main
 
             - name: Build libcxx stage2 arm64
               run: |
