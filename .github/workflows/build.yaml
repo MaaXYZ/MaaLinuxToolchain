@@ -136,6 +136,11 @@ jobs:
               run: |
                 tar Jxf clang-stage1.tar.xz
 
+            - name: Validate clang stage1
+              run: |
+                stage1/bin/clang++ test/main.cpp -o test/main && ldd test/main && test/main
+              # should use libstdc++
+
             - name: Build libcxx stage1
               run: |
                 ./build-libcxx-stage1.sh
@@ -166,6 +171,11 @@ jobs:
               if: ${{ steps.cache-clang-stage2.outputs.cache-hit == 'true' }}
               run: |
                 tar Jxf clang-stage2.tar.xz
+
+            - name: Validate clang stage1
+              run: |
+                stage2/bin/clang++ test/main.cpp -o test/main && ldd test/main && test/main
+              # should use libc++
 
             - name: Build libcxx stage2 x64
               run: |
