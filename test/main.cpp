@@ -1,6 +1,9 @@
-#include <iostream>
-
+#include <atomic>
+std::atomic<int> x;
+std::atomic<short> y;
+std::atomic<char> z;
 int main() {
-  std::cout << "Hello world!" << std::endl;
-  return 0;
+  ++z;
+  ++y;
+  return ++x;
 }

@@ -137,13 +137,18 @@ jobs:
                 tar Jxf clang-stage1.tar.xz
 
             - name: Validate clang stage1
+              # should use libstdc++
               run: |
                 stage1/bin/clang++ test/main.cpp -o test/main && ldd test/main && test/main
-              # should use libstdc++
 
             - name: Build libcxx stage1
               run: |
                 ./build-libcxx-stage1.sh
+
+            - name: Validate clang stage1 libcxx
+              # should use libc++
+              run: |
+                stage1/bin/clang++ test/main.cpp -o test/main --stdlib=libc++ --rtlib=compiler-rt --unwindlib=libunwind -Wl,--rpath=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/lib && ldd test/main && test/main
 
             - name: Cache clang stage2
               id: cache-clang-stage2
@@ -173,9 +178,9 @@ jobs:
                 tar Jxf clang-stage2.tar.xz
 
             - name: Validate clang stage2
+              # should use libc++
               run: |
                 stage2/bin/clang++ test/main.cpp -o test/main -Wl,--rpath=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/lib && ldd test/main && test/main
-              # should use libc++
 
             - name: Build libcxx stage2 x64
               run: |
