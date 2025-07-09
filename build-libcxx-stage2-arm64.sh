@@ -12,7 +12,7 @@ cmake --install build-libcxx-stage2-arm64-rt
 
 echo "Build second stage libc++ arm64"
 cmake -G Ninja -S llvm-project/runtimes -B build-libcxx-stage2-arm64 \
-  -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=`pwd`/x-tools/aarch64-linux-gnu/aarch64-linux-gnu/sysroot/usr \
+  -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=`pwd`/x-tools/aarch64-linux-gnu/aarch64-linux-gnu/sysroot \
   -DCMAKE_TOOLCHAIN_FILE=`pwd`/clang/stage2-arm64.cmake \
   -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind" \
   -DLIBUNWIND_USE_COMPILER_RT=ON \

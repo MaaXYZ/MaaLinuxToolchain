@@ -12,7 +12,7 @@ cmake --install build-libcxx-stage2-x64-rt
 
 echo "Build second stage libc++ x64"
 cmake -G Ninja -S llvm-project/runtimes -B build-libcxx-stage2-x64 \
-  -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=`pwd`/x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/usr \
+  -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=`pwd`/x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot \
   -DCMAKE_TOOLCHAIN_FILE=`pwd`/clang/stage2-x64.cmake \
   -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind;compiler-rt" \
   -DLIBUNWIND_USE_COMPILER_RT=ON \
