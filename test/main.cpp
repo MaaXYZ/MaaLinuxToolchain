@@ -5,5 +5,6 @@ std::atomic<char> z;
 int main() {
   ++z;
   ++y;
-  return ++x;
+  ++x;
+  return 0;
 }
