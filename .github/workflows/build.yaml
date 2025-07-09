@@ -23,7 +23,9 @@ jobs:
             matrix:
                 arch: [x64, arm64]
             fail-fast: false
-        
+        concurrency:
+          group: ${{ github.workflow }}-sysroot-${{ matrix.arch }}
+
         steps:
             - uses: actions/checkout@v4
               with:
@@ -83,6 +85,8 @@ jobs:
     clang:
         needs: [sysroot]
         runs-on: ubuntu-latest
+        concurrency:
+          group: ${{ github.workflow }}-clang
 
         steps:
             - uses: actions/checkout@v4
