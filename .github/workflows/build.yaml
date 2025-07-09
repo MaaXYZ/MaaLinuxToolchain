@@ -151,7 +151,7 @@ jobs:
               with:
                 path: |
                   clang-stage2.tar.xz
-                key: clang-stage2-${{ hashFiles('x64/.config', 'build-clang-stage1.sh', 'clang/stage1.cmake', 'build-libcxx-stage1.sh', 'clang/stage1-with-libs.cmake', 'build-clang-stage2.sh') }}
+                key: clang-stage2-${{ hashFiles('x64/.config', 'build-clang-stage1.sh', 'clang/stage1.cmake', 'build-libcxx-stage1.sh', 'clang/stage1-with-libs.cmake', 'build-clang-stage2.sh', 'clang/stage1-build-stage2.cmake') }}
 
             - name: Build clang stage2
               if: ${{ steps.cache-clang-stage2.outputs.cache-hit != 'true' }}
@@ -165,16 +165,16 @@ jobs:
               with:
                 path: |
                   clang-stage2.tar.xz
-                key: clang-stage2-${{ hashFiles('x64/.config', 'build-clang-stage1.sh', 'clang/stage1.cmake', 'build-libcxx-stage1.sh', 'clang/stage1-with-libs.cmake', 'build-clang-stage2.sh') }}
+                key: clang-stage2-${{ hashFiles('x64/.config', 'build-clang-stage1.sh', 'clang/stage1.cmake', 'build-libcxx-stage1.sh', 'clang/stage1-with-libs.cmake', 'build-clang-stage2.sh', 'clang/stage1-build-stage2.cmake') }}
 
             - name: Unpack clang stage2
               if: ${{ steps.cache-clang-stage2.outputs.cache-hit == 'true' }}
               run: |
                 tar Jxf clang-stage2.tar.xz
 
-            - name: Validate clang stage1
+            - name: Validate clang stage2
               run: |
-                stage2/bin/clang++ test/main.cpp -o test/main && ldd test/main && test/main
+                stage2/bin/clang++ test/main.cpp -o test/main -Wl,--rpath=x-tools/x86_64-linux-gnu/x86_64-linux-gnu/sysroot/lib && ldd test/main && test/main
               # should use libc++
 
             - name: Build libcxx stage2 x64
