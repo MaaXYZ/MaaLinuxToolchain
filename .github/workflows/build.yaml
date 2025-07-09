@@ -11,6 +11,7 @@ on:
             - '.github/workflows/build.yaml'
             - '*.sh'
             - 'clang/*.cmake'
+            - 'test/*'
     workflow_dispatch:
 
 jobs:
