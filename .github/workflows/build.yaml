@@ -107,7 +107,7 @@ jobs:
 
             - name: Cache clang stage1
               id: cache-clang-stage1
-              uses: actions/cache@v4
+              uses: actions/cache/restore@v4
               with:
                 path: |
                   clang-stage1.tar.xz
@@ -116,8 +116,16 @@ jobs:
             - name: Build clang stage1
               if: ${{ steps.cache-clang-stage1.outputs.cache-hit != 'true' }}
               run: |
-                ./build-clang-stage1.sh
-                tar Jcf clang-stage1.tar.xz stage1
+                ./build-clang-stage1.sh && tar Jcf clang-stage1.tar.xz stage1
+
+            - name: Save clang stage1
+              if: ${{ success() && steps.cache-clang-stage1.outputs.cache-hit != 'true' }}
+              id: cache-clang-stage1-save
+              uses: actions/cache/save@v4
+              with:
+                path: |
+                  clang-stage1.tar.xz
+                key: clang-stage1-${{ hashFiles('x64/.config', 'build-clang-stage1.sh', 'clang/stage1.cmake') }}
 
             - name: Unpack clang stage1
               if: ${{ steps.cache-clang-stage1.outputs.cache-hit == 'true' }}
@@ -130,7 +138,7 @@ jobs:
 
             - name: Cache clang stage2
               id: cache-clang-stage2
-              uses: actions/cache@v4
+              uses: actions/cache/restore@v4
               with:
                 path: |
                   clang-stage2.tar.xz
@@ -139,8 +147,16 @@ jobs:
             - name: Build clang stage2
               if: ${{ steps.cache-clang-stage2.outputs.cache-hit != 'true' }}
               run: |
-                ./build-clang-stage2.sh
-                tar Jcf clang-stage2.tar.xz stage2
+                ./build-clang-stage2.sh && tar Jcf clang-stage2.tar.xz stage2
+
+            - name: Cache clang stage2
+              if: ${{ success() && steps.cache-clang-stage2.outputs.cache-hit != 'true' }}
+              id: cache-clang-stage2
+              uses: actions/cache/save@v4
+              with:
+                path: |
+                  clang-stage2.tar.xz
+                key: clang-stage2-${{ hashFiles('x64/.config', 'build-clang-stage1.sh', 'clang/stage1.cmake', 'build-libcxx-stage1.sh', 'clang/stage1-with-libs.cmake', 'build-clang-stage2.sh') }}
 
             - name: Unpack clang stage2
               if: ${{ steps.cache-clang-stage2.outputs.cache-hit == 'true' }}
