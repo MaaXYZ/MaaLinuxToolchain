@@ -149,9 +149,9 @@ jobs:
               run: |
                 ./build-clang-stage2.sh && tar Jcf clang-stage2.tar.xz stage2
 
-            - name: Cache clang stage2
+            - name: Save clang stage2
               if: ${{ success() && steps.cache-clang-stage2.outputs.cache-hit != 'true' }}
-              id: cache-clang-stage2
+              id: cache-clang-stage2-save
               uses: actions/cache/save@v4
               with:
                 path: |
