@@ -23,7 +23,7 @@ jobs:
 
             - uses: actions/download-artifact@v4
               with:
-                  run-id: build
+                  run-id: 16168210394
                   path: assets
                   name: MaaLinuxToolchain-${{ matrix.arch }}
                   github-token: ${{ secrets.NEKO_GITHUB_TOKEN }}
