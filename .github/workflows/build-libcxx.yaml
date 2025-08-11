@@ -42,7 +42,7 @@ jobs:
                     -DCMAKE_TOOLCHAIN_FILE=`pwd`/clang/build-libcxx-${{ matrix.arch }}.cmake \
                     -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind" \
                     -DCMAKE_INSTALL_PREFIX=x-tools/${{ matrix.arch == 'x64' && 'x86_64' || 'aarch64' }}-linux-gnu/${{ matrix.arch == 'x64' && 'x86_64' || 'aarch64' }}-linux-gnu/sysroot/usr \
-                    -DPython3_EXECUTABLE=/usr/bin/
+                    -DPython3_EXECUTABLE=/usr/bin/python3
                   cmake --build ${{ matrix.arch }}/build-libcxx -- -j 16
                   cmake --install ${{ matrix.arch }}/build-libcxx
 
