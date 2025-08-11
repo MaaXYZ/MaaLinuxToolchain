@@ -38,6 +38,11 @@ jobs:
                   maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz
                 key: bare-toolchain-${{ matrix.arch }}-${{ hashFiles(format('{0}/.config', matrix.arch)) }}
 
+            - name: Unpack cache
+              if: ${{ steps.cache-bare-toolchain.outputs.cache-hit == 'true' }}
+              run: |
+                tar Jxvf maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz
+
             - name: Update system
               if: ${{ steps.cache-bare-toolchain.outputs.cache-hit != 'true' }}
               run: |
@@ -63,6 +68,11 @@ jobs:
                   ../install-ctng/bin/ct-ng build
                   cd ..
 
+            - name: Package bare toolchain
+              if: ${{ success() && steps.cache-bare-toolchain.outputs.cache-hit != 'true' }}
+              run: |
+                  tar Jcvf maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz x-tools
+
             - name: Install llvm 20
               run: |
                 wget https://apt.llvm.org/llvm.sh
@@ -84,13 +94,13 @@ jobs:
 
             - name: Package toolchain
               run: |
-                  tar Jcvf maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz x-tools
+                  tar Jcvf maa-linux-toolchain-clang-${{ matrix.arch }}.tar.xz x-tools
 
             - name: Upload toolchain
               uses: actions/upload-artifact@v4
               with:
                   name: MaaLinuxToolchain-${{ matrix.arch }}
-                  path: maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz
+                  path: maa-linux-toolchain-clang-${{ matrix.arch }}.tar.xz
 
             - name: Upload logs
               uses: actions/upload-artifact@v4
