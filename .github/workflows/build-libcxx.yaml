@@ -23,7 +23,7 @@ jobs:
 
             - uses: actions/download-artifact@v4
               with:
-                  id: build
+                  run-id: build
                   path: assets
                   name: MaaLinuxToolchain-${{ matrix.arch }}
 
