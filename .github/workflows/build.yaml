@@ -63,6 +63,12 @@ jobs:
                   ../install-ctng/bin/ct-ng build
                   cd ..
 
+            - name: Install llvm 20
+              run: |
+                wget https://apt.llvm.org/llvm.sh
+                chmod +x llvm.sh
+                sudo ./llvm.sh 20 all
+
             - name: Build libcxx
               run: |
                   git clone https://github.com/llvm/llvm-project -b llvmorg-20.1.8 --depth 1
@@ -72,7 +78,7 @@ jobs:
                     -DCMAKE_TOOLCHAIN_FILE=`pwd`/clang/build-libcxx-${{ matrix.arch }}.cmake \
                     -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind" \
                     -DCMAKE_INSTALL_PREFIX=x-tools/${{ matrix.arch == 'x64' && 'x86_64' || 'aarch64' }}-linux-gnu/${{ matrix.arch == 'x64' && 'x86_64' || 'aarch64' }}-linux-gnu/sysroot/usr \
-                    -DPython3_EXECUTABLE=/usr/bin/
+                    -DPython3_EXECUTABLE=/usr/bin/python3
                   cmake --build ${{ matrix.arch }}/build-libcxx -- -j 16
                   cmake --install ${{ matrix.arch }}/build-libcxx
 
