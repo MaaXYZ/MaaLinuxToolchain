@@ -26,6 +26,7 @@ jobs:
                   run-id: build
                   path: assets
                   name: MaaLinuxToolchain-${{ matrix.arch }}
+                  github-token: ${{ secrets.NEKO_GITHUB_TOKEN }}
 
             - name: Debug
               run: |
