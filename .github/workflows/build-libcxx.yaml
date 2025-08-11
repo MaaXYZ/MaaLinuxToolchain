@@ -28,11 +28,10 @@ jobs:
                   name: MaaLinuxToolchain-${{ matrix.arch }}
                   github-token: ${{ secrets.NEKO_GITHUB_TOKEN }}
 
-            - name: Debug
+            - name: Prepare x-tools
               run: |
-                  find assets
-                  tar Jxvf maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz
-                  find x-tools
+                  tar Jxvf assets/maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz
+                  ls x-tools
 
             - name: Build libcxx
               run: |
