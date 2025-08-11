@@ -63,6 +63,17 @@ jobs:
                   ../install-ctng/bin/ct-ng build
                   cd ..
 
+            - name: Package toolchain
+              if: ${{ success() && steps.cache-bare-toolchain.outputs.cache-hit != 'true' }}
+              run: |
+                  tar Jcvf maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz x-tools
+
+            - name: Upload toolchain
+              uses: actions/upload-artifact@v4
+              with:
+                  name: MaaLinuxToolchain-${{ matrix.arch }}
+                  path: maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz
+
             - name: Build libcxx
               run: |
                   git clone https://github.com/llvm/llvm-project -b llvmorg-20.1.8 --depth 1
@@ -76,15 +87,14 @@ jobs:
                   cmake --install ${{ matrix.arch }}/build-libcxx
 
             - name: Package toolchain
-              if: ${{ success() && steps.cache-bare-toolchain.outputs.cache-hit != 'true' }}
               run: |
-                  tar Jcvf maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz x-tools
+                  tar Jcvf maa-linux-toolchain-clang-sysroot-${{ matrix.arch }}.tar.xz x-tools
 
             - name: Upload toolchain
               uses: actions/upload-artifact@v4
               with:
-                  name: MaaLinuxToolchain-${{ matrix.arch }}
-                  path: maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz
+                  name: MaaLinuxToolchainClang-${{ matrix.arch }}
+                  path: maa-linux-toolchain-clang-sysroot-${{ matrix.arch }}.tar.xz
 
             - name: Upload logs
               uses: actions/upload-artifact@v4
