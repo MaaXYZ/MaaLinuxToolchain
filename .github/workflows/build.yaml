@@ -77,7 +77,7 @@ jobs:
             - name: Build libcxx
               run: |
                   git clone https://github.com/llvm/llvm-project -b llvmorg-20.1.8 --depth 1
-                  cmake llvm-project/runtimes -G Ninja -B ${{ matrix.arch }}/build-libcxx \
+                  cmake llvm-project/runtimes -B ${{ matrix.arch }}/build-libcxx \
                     -DCMAKE_BUILD_TYPE=Release \
                     -DCMAKE_TOOLCHAIN_FILE=clang/build-libcxx-${{ matrix.arch }}.cmake \
                     -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind" \
