@@ -1,0 +1,57 @@
+name: build
+
+on:
+    push:
+        tags:
+            - 'v*'
+    workflow_dispatch:
+
+jobs:
+    libcxx:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                arch: [x64, arm64]
+            fail-fast: false
+        concurrency:
+          group: ${{ github.workflow }}-libcxx-${{ matrix.arch }}
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  submodules: true
+
+            - uses: actions/download-artifact@v4
+              with:
+                  id: build
+                  path: assets
+                  name: MaaLinuxToolchain-${{ matrix.arch }}
+
+            - name: Debug
+              run: |
+                  find assets
+                  tar Jxvf maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz
+                  find x-tools
+
+            - name: Build libcxx
+              run: |
+                  git clone https://github.com/llvm/llvm-project -b llvmorg-20.1.8 --depth 1
+                  cmake llvm-project/runtimes -G Ninja -B ${{ matrix.arch }}/build-libcxx \
+                    -DCMAKE_MAKE_PROGRAM=ninja \
+                    -DCMAKE_BUILD_TYPE=Release \
+                    -DCMAKE_TOOLCHAIN_FILE=`pwd`/clang/build-libcxx-${{ matrix.arch }}.cmake \
+                    -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind" \
+                    -DCMAKE_INSTALL_PREFIX=x-tools/${{ matrix.arch == 'x64' && 'x86_64' || 'aarch64' }}-linux-gnu/${{ matrix.arch == 'x64' && 'x86_64' || 'aarch64' }}-linux-gnu/sysroot/usr \
+                    -DPython3_EXECUTABLE=/usr/bin/
+                  cmake --build ${{ matrix.arch }}/build-libcxx -- -j 16
+                  cmake --install ${{ matrix.arch }}/build-libcxx
+
+            - name: Package toolchain
+              run: |
+                  tar Jcvf maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz x-tools
+
+            - name: Upload toolchain
+              uses: actions/upload-artifact@v4
+              with:
+                  name: MaaLinuxToolchain-${{ matrix.arch }}
+                  path: maa-linux-toolchain-sysroot-${{ matrix.arch }}.tar.xz
