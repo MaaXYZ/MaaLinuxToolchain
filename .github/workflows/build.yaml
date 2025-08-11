@@ -44,7 +44,7 @@ jobs:
                   sudo apt-get update
                   sudo apt-get remove --purge firefox
                   sudo apt-get upgrade
-                  sudo apt-get install -y clang lld
+                  sudo apt-get install -y clang lld ninja-build
 
             - name: Install deps
               if: ${{ success() && steps.cache-bare-toolchain.outputs.cache-hit != 'true' }}
@@ -63,7 +63,7 @@ jobs:
                   ../install-ctng/bin/ct-ng build
                   cd ..
 
-            - name: Download llvm
+            - name: Build libcxx
               run: |
                   git clone https://github.com/llvm/llvm-project -b llvmorg-20.1.8 --depth 1
                   cmake llvm-project/runtimes -G Ninja -B ${{ matrix.arch }}/build-libcxx \
